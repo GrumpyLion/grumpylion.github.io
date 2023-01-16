@@ -6,7 +6,18 @@ date: 2018-02-13T12:21:57-05:00
 
 [Jump to Hobby Projects]({{<ref "#hobby" >}}) 
 
-# Ubisoft
+# Chucklefish (2022-now)
+
+At Chucklefish I had the opportunity to work on Witchbrook with lots of lovely people!
+
+To be more precise I..
+- worked on many existing game systems and improved them
+- worked closely together with the team to add new game systems
+- used feedback from the team to improve the game systems I've implemented
+- worked on the in-house game engine halley
+
+
+# Ubisoft (2017-2022)
 
 While being at Ubisoft I’ve had the opportunity to work with talented people on great projects like Skull and Bones, For Honor, Rainbow Six Siege, The Settlers and on the Snowdrop Engine.
 
@@ -22,8 +33,17 @@ To be more precise I..
 
 Here are the projects that I've worked on in my free time.
 
+### Odyssey Engine (2022-now) {#odyssey}
 
-### Solar Odyssey (2017-2021) {#solarodyssey}
+Odyssey is currently very WIP and in the beginning phase. It will be the new engine for Solar Odyssey and will have all the features that Solar Odyssey had.
+
+- C++ Vulkan
+- Nintendo Switch support from the start
+
+[github](https://github.com/GrumpyLion/odyssey)
+
+
+### Solar Odyssey (2017-now) {#solarodyssey}
 
 Planet Demo (2021)
 
