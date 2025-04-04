@@ -1,79 +1,603 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-	<meta name="generator" content="Hugo 0.91.2" />
-    <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="chrome=1">
-<meta name="HandheldFriendly" content="True">
-<meta name="MobileOptimized" content="320">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lion Schitik</title>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.1/three.min.js"></script>
 
-<meta name="description" content="Lion&#39;s Portfolio">
-<title>
-    Lion&rsquo;s Portfolio
-</title>
-<link href="/index.xml" rel="alternate" type="application/rss+xml" title="Lion&rsquo;s Portfolio" />
+    <style>
+        :root {
+            --primary-color: #0c1727;
+            --secondary-color: #ccd6f6;
+            --accent-color: #B85C5C;
+            --background-light: rgba(255, 255, 255, 0.5);
+            --background-dark: rgba(0, 0, 0, 0.4);
+            --shadow-color: rgba(2, 12, 27, 0.7);
+            --card-bg: #112240;
+        }
 
-<link rel="shortcut icon" href="/sam.ico">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        html {
+            scroll-behavior: smooth;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: var(--primary-color);
+            overflow-x: hidden;
+        }
 
+        #threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
 
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
+        .content-section {
+            background-color: var(--background-dark);
+            box-shadow: 0 10px 30px -15px var(--shadow-color);
+            padding: 30px;
+            border-radius: 4px;
+            margin-bottom: 50px;
+        }
 
+        header {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background-color: transparent;
+            box-shadow: none;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 50px;
+        }
 
+        header h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
 
-<link rel="stylesheet" href="/css/main.min.6d10ea1ed2e66d431267324e2126b185c40ae2a7adb70d109ce81ce22729f1c3.css" integrity="sha256-bRDqHtLmbUMSZzJOISaxhcQK4qettw0QnOgc4icp8cM=" crossorigin="anonymous" media="screen">
+        header h2 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
 
+        header p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            max-width: 600px;
+            color: var(--secondary-color);
+            margin: 0 auto;
+        }
 
+        #projects {
+            padding-top: 40px;
+        }
 
+        #projects h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+        }
 
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 30px 30px;
+        }
 
+        .project-card {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            border-radius: 4px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 3px solid var(--accent-color);
+        }
 
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px -15px var(--shadow-color);
+        }
 
-<link rel="stylesheet" href="https://example.com/css/photoswipe.css">
+        .project-card h3 {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
 
-<link rel="stylesheet" href="https://example.com/css/default-skin.css">
+        .project-card p {
+            font-size: 0.95rem;
+            color: #a8b2d1;
+            margin-bottom: 15px;
+        }
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Didact+Gothic">
+        .project-card a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://example.com/tn.png"/>
+        .project-card a:hover {
+           text-decoration: underline;
+        }
 
-<meta name="twitter:title" content="Lion&#39;s Portfolio"/>
-<meta name="twitter:description" content="Lion&#39;s Portfolio"/>
+        .project-item {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 4px;
+            margin-bottom: 50px;
+            background-color: rgba(0,0,0,0);
+        }
 
-<meta property="og:title" content="Lion&#39;s Portfolio" />
-<meta property="og:description" content="Lion&#39;s Portfolio" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://example.com/" /><meta property="og:image" content="https://example.com/tn.png"/><meta property="og:site_name" content="Lion&#39;s Portfolio" />
+        .project-item:last-child {
+            margin-bottom: 0;
+        }
 
+        .project-item h3 {
+            font-size: 1.6rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+        }
 
+        .project-item p {
+            font-size: 1rem;
+            color: #a8b2d1;
+            margin-bottom: 25px;
+        }
 
-    <title>Lion&rsquo;s Portfolio</title>
+        .project-link {
+            display: inline-block;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 15px;
+            transition: color 0.3s ease, transform 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .project-link:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+            transform: translateY(-2px);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 4px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .local-video-player-wrapper {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            line-height: 0;
+            background-color: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            /* border: 3px solid var(--accent-color); */
+        }
+
+        .local-video-player-wrapper video {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        #about h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+        }
+
+        #about p {
+            font-size: 1.1rem;
+            text-align: justify;
+            color: #a8b2d1;
+        }
+        #about a {
+             color: var(--accent-color);
+             text-decoration: none;
+             transition: color 0.3s ease;
+        }
+        #about a:hover {
+            text-decoration: underline;
+        }
+
+        .about-flex-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .about-image-container {
+            flex-shrink: 0;
+        }
+
+        .profile-picture {
+            display: block;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        .about-text-container {
+            flex-grow: 1;
+            padding: 0px 30px;
+        }
+
+        @media (max-width: 600px) {
+            .about-flex-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .about-image-container {
+                margin-bottom: 20px;
+            }
+
+            #about p {
+            text-align: justify;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            color: #8892b0;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            animation: bounce 2s infinite;
+            z-index: 2;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-section {
+                padding: 40px 15px;
+            }
+             .project-item {
+                 padding: 20px;
+             }
+            header h1 {
+                font-size: 2.2rem;
+            }
+            header h2 {
+                font-size: 1.1rem;
+            }
+            #projects h2, #about h2 {
+                font-size: 2rem;
+            }
+        }
+
+    </style>
 </head>
-
 <body>
+
+    <div id="threejs-container"></div>
+
+    <header>
+        <h1>Lion Schitik</h1>
+        <h2>Game Developer | Programmer</h2>
+        <p>Welcome! I've been programming games since 2011 and started working professionally since 2017, with experience at Ubisoft, Keen Games, and Chucklefish. I'm currently working on Witchbrook at Robotality and personal projects. See my work below or <a href="devlog.html" style="color: var(--accent-color); text-decoration: underline;">read my devlogs!</a></p>
+
+        <div class="scroll-down">Scroll Down ↓</div>
+    </header>
+
+    <div class="content-wrapper">
+        <section id="projects" class="content-section">
+            <h2>My Projects</h2>
+
+            <div class="project-item">
+                <h3>Short montage</h3>
+                <p>
+                    A short montage of stuff I did
+                </p>
+                <div class="local-video-player-wrapper">
+                    <video controls width="100%">
+                        <source src="bg.mp4" type="video/mp4">
+                        Your browser does not support the video tag. Please update your browser.
+                    </video>
+                </div>
+            </div>
+
+
+            <div class="project-item">
+                <h3>Solar Odyssey</h3>
+                <p>
+                    Solar Odyssey is a project that I have been working on and off since 2017. It went through multiple reboots.. maybe I will finish it one day. A space game inspired by the abandoned 0x10c project from Notch. It's being implemented in my own engine.
+                </p>
+                <div class="video-container">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/VO1pV1mx8aQ"
+                        title="YouTube"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <h3>Solar Odyssey - Planet Demo</h3>
+                <p>
+                    One thing that was important to me for Solar Odyssey is that you are playing in a miniature solar system. So planets that are pretty small but have physics, so in theory you can orbit planets with your spaceship!
+                </p>
+                <div class="video-container">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/tTMjLHawgRQ"
+                        title="YouTube"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <h3>Bloodflood</h3>
+                <p>
+                    Bloodflood is one of the projects I have worked on with a game designer and artist, while being at the Games Academy in Frankfurt 2017. It was made in Unity.
+                </p>
+                <div class="video-container">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/S6fvaT3N9Kc"
+                        title="YouTube"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <h3>Village Builder</h3>
+                <p>
+                    This project is from 2014, back then I wanted to make a small village builder.. I never finished that beyond this tech demo. It was made in Java with LWJGL
+                </p>
+                <div class="video-container">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/A-E25BfGTm8"
+                        title="YouTube"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <h2>Some other projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3>Filthy Blockheads</h3>
+                    <p>A ludum dare game made in 48 hours with C# and monogame.</p>
+                    <a href="https://ldjam.com/events/ludum-dare/41/filthy-blockheads" target="_blank" rel="noopener noreferrer">View Ludum Dare Project (Link)</a> | 
+                    <a href="https://www.youtube.com/watch?v=3U6hvD0v7cM" target="_blank" rel="noopener noreferrer"> View Video (Link)</a>
+                </div>
+                <div class="project-card">
+                    <h3>Voxel renderer</h3>
+                    <p>A voxel renderer made with OpenGL and C++ in 2014. It was later replaced by the Java project.</p>
+                    <a href="https://www.youtube.com/watch?v=1gN9g5iudf0" target="_blank" rel="noopener noreferrer">View Video (Link)</a>
+                </div>
+                <div class="project-card">
+                    <h3>Subayaku Engine</h3>
+                    <p>A simple 3d engine with DX11 and OpenGL. Using GameObjects/Components hierachy and lua scripting. Made in 2017.</p>
+                    <a href="https://www.youtube.com/watch?v=cVDqgcDm5kE" target="_blank" rel="noopener noreferrer">View Video (Link)</a> | 
+                    <a href="https://github.com/GrumpyLion/Subayaku-Game-Engine" target="_blank" rel="noopener noreferrer"> View Code (Link)</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="content-section">
+            <h2>About Me</h2>
+                <div class="about-text-container">
+                    <p style="margin-bottom: 30px;">
+                        Hi, I'm Lion! My programming journey began at age twelve (2011), creating mods for Minecraft. Discovering a passion for it, I learned C++ and later attended the Games Academy in Frankfurt.
+                        A year before graduating, I started my professional career at Ubisoft Mainz in 2017, focusing mainly on engine and rendering development, before transferring to Ubisoft Düsseldorf in 2018.
+                        Currently, I'm based in Germany, working as a programmer on Witchbrook at Robotality. Throughout my career, I've been fortunate to collaborate with many talented people globally.
+                        It's great to connect!
+                    </p>
+                    <div class="about-image-container">
+                        <img src="me.png" alt="That's me!" class="profile-picture">
+                    </div>
+                    <p style="margin-top: 30px;margin-bottom: 20px;">
+                        Let's connect! You can find me on <a href="https://de.linkedin.com/in/lionschitik" target="_blank" rel="noopener noreferrer">LinkedIn</a> / <a href="https://github.com/GrumpyLion" target="_blank" rel="noopener noreferrer">GitHub</a> / <a href="https://bsky.app/profile/grumpylion.games" target="_blank" rel="noopener noreferrer">Bluesky</a>.
+                    </p>
+                </div>
+        </section>
+
+    </div>
+    <footer>
+        <p>© <span id="current-year"></span> Lion Schitik. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
     
+        let scene, camera, renderer, particles, sphere;
+        const container = document.getElementById('threejs-container');
+        const initialCameraZ = 5;
+        const clock = new THREE.Clock();
+    
+        let targetScrollZ = 0;
+        const scrollFactor = 0.0004;
+        const lerpFactor = 0.04;
 
-    <nav role="navigation" class="flex-container" id="splash">
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
+            camera.position.z = initialCameraZ;
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
 
-        
-        
-            <a href="about" class="big-link">
-                about me
-            </a>
-        
-            <a href="posts" class="big-link">
-                portfolio
-            </a>
-        
+            const particleCount = 2000;
+            const particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+    
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+    
+                const phi = Math.acos(-1 + (2 * Math.random())); 
+                const theta = Math.random() * Math.PI * 2;
+                const radius = Math.cbrt(Math.random()) * 20;
+    
+                positions[i3 + 0] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                positions[i3 + 2] = radius * Math.cos(phi);
+            }
+    
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0xAAAAAA,
+                size: 0.025,
+                sizeAttenuation: true,
+                transparent: true,
+                opacity: 0.5,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+    
+            particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
 
-        
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
 
-    </nav>
-</body>
+            const geometry = new THREE.SphereGeometry(3, 12, 12);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x33886B,
+                metalness: 0.3,
+                roughness: 0.6,
+                wireframe: true
+            });
 
+            sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+
+            animate();
+            window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener('scroll', onScroll, { passive: true });
+        }
+    
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            const deltaZ = targetScrollZ - particles.position.z;
+            if (sphere) {
+                sphere.rotation.y = elapsedTime * 0.05;
+                sphere.rotation.x = elapsedTime * 0.02;
+                sphere.position.z += deltaZ * lerpFactor;
+            }
+
+            if (particles) {
+                 particles.rotation.y = elapsedTime * 0.05;
+                 particles.rotation.x = elapsedTime * 0.02;
+                 particles.position.z += deltaZ * lerpFactor;
+            }
+    
+            renderer.render(scene, camera);
+        }
+    
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }
+    
+        function onScroll() {
+            const scrollY = window.scrollY;
+            targetScrollZ = -scrollY * scrollFactor;
+        }
+    
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThreeJS);
+        } else {
+            initThreeJS();
+        }
+    
+    </script>
+    </body>
 </html>

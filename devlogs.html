@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Devlogs</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.1/three.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+
+    <style>
+        :root {
+            --primary-color: #0c1727;
+            --secondary-color: #ccd6f6;
+            --accent-color: #B85C5C;
+            --background-dark: rgba(0, 0, 0, 0.4);
+            --shadow-color: rgba(2, 12, 27, 0.7);
+            --card-bg: #112240;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: var(--primary-color);
+            overflow-x: hidden;
+        }
+        a { color: var(--accent-color); text-decoration: none; transition: color 0.3s ease; }
+        a:hover { text-decoration: underline; }
+
+        #threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .devlog-header {
+            background-color: var(--background-dark);
+            padding: 25px 30px;
+            border-radius: 8px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px -15px var(--shadow-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .devlog-header h1 {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        .devlog-header .back-link {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .devlog-header .back-link:hover {
+            background-color: var(--background-dark);
+            text-decoration: none;
+        }
+
+        .devlog-entries {
+            /* No extra styles needed if entries have margins */
+        }
+
+        .devlog-entry {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+            border-left: 5px solid var(--accent-color);
+            background-color: var(--background-dark);
+        }
+        .devlog-entry h2 {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+        .devlog-entry .entry-meta {
+            display: block;
+            font-size: 0.9rem;
+            color: #a8b2d1;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .devlog-entry p {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .devlog-entry p:last-of-type {
+            margin-bottom: 0;
+        }
+        .devlog-entry code {
+            background-color: rgba(20, 20, 20, 0.95);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .devlog-entry pre {
+            background-color: rgba(20, 20, 20, 0.95);
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .devlog-entry pre code {
+            background-color: transparent;
+            padding: 0;
+            font-size: 0.85em;
+        }
+
+        .devlog-image-figure {
+            display: block;
+            max-width: 85%;
+            margin: 25px auto;
+            padding: 0;
+            text-align: center;
+        }
+
+        .devlog-image-figure img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border: 3px solid var(--accent-color);
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .devlog-image-figure figcaption {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #a8b2d1;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            color: #8892b0;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+         @media (max-width: 600px) {
+            .devlog-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .devlog-header h1 {
+                margin-bottom: 15px;
+                font-size: 2rem;
+            }
+            .devlog-entry {
+                padding: 20px;
+            }
+             .devlog-entry h2 {
+                 font-size: 1.5rem;
+             }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="threejs-container"></div>
+
+    <div class="content-wrapper">
+
+        <header class="devlog-header">
+            <h1>Development Logs</h1>
+            <a href="index.html" class="back-link">&larr; Back to Portfolio</a>
+        </header>
+
+        <main class="devlog-entries">
+            <article class="devlog-entry">
+                <h2>Super interesting blog</h2>
+                <time class="entry-meta" datetime="2023-10-27">April 04, 2025</time>
+                <p>
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+                </p>
+                <pre><code class="language-javascript">int main()
+{
+    printf("Hello World!\n");
+}</code></pre>
+                <p>
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.                </p>
+            </article>
+
+            <article class="devlog-entry">
+                <h2>Another one</h2>
+                 <time class="entry-meta" datetime="2023-10-28">April 04, 2025</time>
+                <p>
+                    Trying to add images
+                </p>
+                <figure class="devlog-image-figure">
+                    <img src="me.png" alt="Screenshot showing the particle system in action">
+                    <figcaption>
+                        Very cool image of me
+                    </figcaption>
+                </figure>
+                <p>
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                </p>
+                 <p>
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                 </p>
+            </article>
+
+             <!-- Add More Devlog Entries Here -->
+             <!-- Copy the <article class="devlog-entry">...</article> structure -->
+
+        </main>
+
+        <footer>
+            <p>&copy; <span id="current-year"></span> Lion Schitik. All Rights Reserved.</p>
+        </footer>
+
+    </div>
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        let scene, camera, renderer, particles, particleGeometry;
+        const container = document.getElementById('threejs-container');
+        const initialCameraZ = 5;
+        const clock = new THREE.Clock();
+
+        const particleCount = 300;
+        const fallSpeedBase = 0.005;
+        const fallSpeedVariance = 0.0001;
+        const driftSpeed = 0.002;
+        const spawnBoxWidth = 20;
+        const spawnHeight = 10;
+        const respawnThresholdY = -10;
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = initialCameraZ;
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            particleGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount);
+            const driftOffsets = new Float32Array(particleCount);
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+
+                positions[i3 + 0] = (Math.random() - 0.5) * spawnBoxWidth;
+                positions[i3 + 1] = (Math.random()) * spawnHeight * 2 - spawnHeight;
+                positions[i3 + 2] = (Math.random() - 0.5) * spawnBoxWidth;
+
+                velocities[i] = fallSpeedBase + (Math.random() - 0.5) * fallSpeedVariance;
+                driftOffsets[i] = Math.random() * Math.PI * 2;
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.userData.velocities = velocities;
+            particleGeometry.userData.driftOffsets = driftOffsets;
+
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0xFFFFFF,
+                size: 0.06,
+                sizeAttenuation: true,
+                transparent: true,
+                opacity: 0.2,
+                blending: THREE.NormalBlending,
+                depthWrite: false
+            });
+
+            particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            animate();
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+            const deltaTime = clock.getDelta();
+
+            if (particles && particleGeometry) {
+                 const positions = particleGeometry.attributes.position.array;
+                 const velocities = particleGeometry.userData.velocities;
+                 const driftOffsets = particleGeometry.userData.driftOffsets;
+
+                 for (let i = 0; i < particleCount; i++) {
+                     const i3 = i * 3;
+                     positions[i3 + 1] -= velocities[i];
+                     positions[i3 + 0] += Math.sin(elapsedTime * 0.5 + driftOffsets[i]) * driftSpeed;
+                     positions[i3 + 2] += Math.cos(elapsedTime * 0.3 + driftOffsets[i]) * driftSpeed * 0.7;
+
+                     if (positions[i3 + 1] < respawnThresholdY) {
+                         positions[i3 + 1] = spawnHeight;
+                         positions[i3 + 0] = (Math.random() - 0.5) * spawnBoxWidth;
+                         positions[i3 + 2] = (Math.random() - 0.5) * spawnBoxWidth;
+                     }
+                 }
+
+                 particleGeometry.attributes.position.needsUpdate = true;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThreeJS);
+        } else {
+            initThreeJS();
+        }
+
+    </script>
+</body>
+</html>
